@@ -47,9 +47,14 @@ public class AppTest {
         }
 
         driver.findElement(By.xpath("//*[@id='usernameField']")).sendKeys("nikhilgarg855@gmail.com");
+        System.out.println("Entered Username");
         driver.findElement(By.xpath("//*[@id='passwordField']")).sendKeys("Sons@1234");
+        System.out.println("Entered Password");
+        System.out.println(driver.getTitle());
         driver.findElement(By.xpath("//button[text()='Login']")).click();
-
+        System.out.println(driver.getTitle());
+        System.out.println("Hit login");
+        
         driver.findElement(By.xpath("//*[text()='View']")).click();
         driver.findElement(By.xpath("//*[text()='Resume headline']/following-sibling::span[text()='editOneTheme']")).click();
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
