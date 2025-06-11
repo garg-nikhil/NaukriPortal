@@ -1,0 +1,33 @@
+name: Run Naukri Update Test Every 30 Mins from 6 AM IST
+
+on:
+  schedule:
+    - cron: '0,30 * * * *'  # Every 30 minutes
+  workflow_dispatch:
+
+jobs:
+  run-tests:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Set up Chrome
+        uses: browser-actions/setup-chrome@v1
+
+      #      - name: Cache Maven dependencies
+      #        uses: actions/cache@v3
+      #        with:
+      #          path: ~/.m2
+      #          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+      #          restore-keys: ${{ runner.os }}-maven
+
+      - name: Run NaukriUpdate.xml tests
+        run: mvn clean install -DsuiteXmlFile=testng.xml
