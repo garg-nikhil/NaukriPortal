@@ -23,19 +23,6 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
-      # - name: Install Xvfb
-      #   run: sudo apt-get install -y xvfb
-
-      # - name: Start Xvfb
-      #   run: | 
-      #     export DISPLAY=:99
-      #     Xvfb :99 -screen 0 1920x1080x24 & 
-      #     echo "DISPLAY=:99" >> $GITHUB_ENV
-        
-
-      # - name: Set up Chrome
-      #   uses: browser-actions/setup-chrome@v1
-
       - name: Cache Maven dependencies
         uses: actions/cache@v3
         with:
@@ -43,5 +30,21 @@ jobs:
                key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
                restore-keys: ${{ runner.os }}-maven
 
-      - name: Run NaukriUpdate.xml tests
-        run: mvn clean install -DsuiteXmlFile=testng.xml
+      - name: Install XVFB and Chrome dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y xvfb
+          export DISPLAY=:99
+          Xvfb :99 -screen 0 1920x1080x24 &
+
+      - name: Run Tests (non-headless Chrome)
+        run: |
+          export DISPLAY=:99
+          mvn clean install -DsuiteXmlFile=testng.xml
+      # - name: Set up Chrome
+      #   uses: browser-actions/setup-chrome@v1
+
+     
+
+      # - name: Run NaukriUpdate.xml tests
+      #   run: mvn clean install -DsuiteXmlFile=testng.xml
