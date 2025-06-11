@@ -28,11 +28,11 @@ public class AppTest {
     public void updateNaukri(){
         WebDriverManager.chromedriver().setup();
         ChromeOptions options = new ChromeOptions();
-      //  options.addArguments("--headless=new"); // for Chrome 109+
+        options.addArguments("--headless=new"); // for Chrome 109+
         options.addArguments("--disable-dev-shm-usage");
         options.addArguments("--no-sandbox");
-        //options.addArguments("--disable-gpu");
-        //options.addArguments("--remote-allow-origins=*"); // Optional but safe
+        options.addArguments("--disable-gpu");
+        options.addArguments("--remote-allow-origins=*"); // Optional but safe
         options.addArguments("--window-size=1920,1080");
 
         driver = new ChromeDriver(options);
