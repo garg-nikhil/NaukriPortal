@@ -1,6 +1,10 @@
 name: Run Naukri Update Test Every 30 Mins from 6 AM IST
 
 on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
   schedule:
     - cron: '0,30 * * * *'  # Every 30 minutes
   workflow_dispatch:
@@ -19,25 +23,25 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
-      - name: Install Xvfb
-        run: sudo apt-get install -y xvfb
+      # - name: Install Xvfb
+      #   run: sudo apt-get install -y xvfb
 
-      - name: Start Xvfb
-        run: | 
-          export DISPLAY=:99
-          Xvfb :99 -screen 0 1920x1080x24 & 
-          echo "DISPLAY=:99" >> $GITHUB_ENV
+      # - name: Start Xvfb
+      #   run: | 
+      #     export DISPLAY=:99
+      #     Xvfb :99 -screen 0 1920x1080x24 & 
+      #     echo "DISPLAY=:99" >> $GITHUB_ENV
         
 
       - name: Set up Chrome
         uses: browser-actions/setup-chrome@v1
 
-      #      - name: Cache Maven dependencies
-      #        uses: actions/cache@v3
-      #        with:
-      #          path: ~/.m2
-      #          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-      #          restore-keys: ${{ runner.os }}-maven
+      - name: Cache Maven dependencies
+        uses: actions/cache@v3
+        with:
+               path: ~/.m2
+               key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+               restore-keys: ${{ runner.os }}-maven
 
       - name: Run NaukriUpdate.xml tests
         run: mvn clean install -DsuiteXmlFile=testng.xml
