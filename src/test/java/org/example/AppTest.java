@@ -36,7 +36,7 @@ public class AppTest {
         options.addArguments("--window-size=1920,1080");
 
         driver = new ChromeDriver(options);
-        //driver.manage().window().setSize(new Dimension(1920, 1080));
+        driver.manage().window().setSize(new Dimension(1920, 1080));
         driver.get("https://login.naukri.com/nLogin/Login.php");
         driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
         File screenshot = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
