@@ -53,7 +53,16 @@ jobs:
           kill -INT $(cat ffmpeg_pid.txt)
           sleep 2
 
+      - name: Check if video exists
+        run: |
+          if [ -f recordings/test_run.mp4 ]; then echo "Video recorded"; else echo "Video not found!"; fi
+
+      - name: Print ffmpeg log
+        if: always()
+        run: cat recordings/ffmpeg.log
+
       - name: Upload Video Artifact
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: test-recording
