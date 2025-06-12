@@ -48,7 +48,7 @@ public class AppTest {
 
         driver.findElement(By.xpath("//*[@id='usernameField']")).sendKeys("nikhilgarg855@gmail.com");
         System.out.println("Entered Username");
-        driver.findElement(By.xpath("//*[@id='passwordField']")).sendKeys("Sons@1234");
+        driver.findElement(By.xpath("//*[@id='passwordField']")).sendKeys("");
         System.out.println("Entered Password");
         System.out.println(driver.getTitle());
         driver.findElement(By.xpath("//button[text()='Login']")).click();
