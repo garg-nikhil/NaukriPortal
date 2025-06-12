@@ -22,27 +22,64 @@ jobs:
         with:
           java-version: '17'
           distribution: 'temurin'
+      - name: Set up Chrome
+        uses: browser-actions/setup-chrome@v1
 
-      - name: Cache Maven dependencies
-        uses: actions/cache@v3
-        with:
-               path: ~/.m2
-               key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-               restore-keys: ${{ runner.os }}-maven
-
-      - name: Install XVFB and Chrome dependencies
+      - name: Install Dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y xvfb
-          export DISPLAY=:99
-          Xvfb :99 -screen 0 1920x1080x24 &
+          sudo apt-get install -y xvfb ffmpeg fluxbox x11-utils wmctrl
 
-      - name: Run Tests (non-headless Chrome)
+      - name: Start Xvfb and Fluxbox
         run: |
           export DISPLAY=:99
-          mvn clean install -DsuiteXmlFile=testng.xml
-      # - name: Set up Chrome
-      #   uses: browser-actions/setup-chrome@v1
+          Xvfb :99 -screen 0 1920x1080x24 & 
+          sleep 3
+          fluxbox &
+          echo "DISPLAY=:99" >> $GITHUB_ENV
+
+      - name: Start Screen Recording
+        run: |
+          mkdir -p recordings
+          ffmpeg -video_size 1920x1080 -framerate 25 -f x11grab -i :99.0 -y recordings/test_run.mp4 &
+          echo $! > ffmpeg_pid.txt
+
+      - name: Run Tests
+        run: mvn clean install -DsuiteXmlFile=testng.xml
+
+      - name: Stop Recording
+        if: always()
+        run: |
+          kill -INT $(cat ffmpeg_pid.txt)
+          sleep 2
+
+      - name: Upload Video Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: test-recording
+          path: recordings/test_run.mp4
+
+
+      # - name: Cache Maven dependencies
+      #   uses: actions/cache@v3
+      #   with:
+      #          path: ~/.m2
+      #          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+      #          restore-keys: ${{ runner.os }}-maven
+
+      # - name: Install XVFB and Chrome dependencies
+      #   run: |
+      #     sudo apt-get update
+      #     sudo apt-get install -y xvfb
+      #     export DISPLAY=:99
+      #     Xvfb :99 -screen 0 1920x1080x24 &
+
+      # - name: Run Tests (non-headless Chrome)
+      #   run: |
+      #     export DISPLAY=:99
+      #     mvn clean install -DsuiteXmlFile=testng.xml
+      # # - name: Set up Chrome
+      # #   uses: browser-actions/setup-chrome@v1
 
      
 
